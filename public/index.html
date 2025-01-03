@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Messenger</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h1{
+            text-align: center;
+            margin-top: 50px;
+            font-family: 'Courier New', Courier, monospace;
+            color:#51e5ff
+        }
+
+        #form{
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #msg{
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #51e5ff;
+            border-radius: 5px;
+            width: 300px;
+        }
+
+        #sendBtn{
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #51e5ff;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        #sendBtn:hover{
+            background-color: #51e5ff;
+            color: white;
+        }
+
+        /* sender msg sould be on one side  and rechivers should be on the other side with diffrent color background*/
+
+        #messages{
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #messagesList{
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            width: 300px;
+        }
+
+        #messagesList li{
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #83eaff;
+        }
+
+        #messagesList li:nth-child(odd){
+            background-color: #94ffa9;
+            text-align: right;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Simple Messenger</h1>
+
+    <div id = "messages">
+        <ul id = "messagesList">
+            <!-- Messages will be displayed here -->
+        </ul>
+
+    </div>
+
+    <form id = "form">
+        <input type = "text" id = "msg" autocomplete = "off" title="Message"/>
+        <button id = 'sendBtn'>Send</button>
+    </form>
+
+
+
+
+
+    <script src = "/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+        const form = document.getElementById('form');
+        const msg = document.getElementById('msg');
+        const sendBtn = document.getElementById('sendBtn');
+        
+
+        socket.on('chat message', (msg) => {
+            const messagesList = document.getElementById('messagesList');
+            const li = document.createElement('li');
+            li.textContent = msg;
+            messagesList.appendChild(li);
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if(msg.value){
+                console.log(msg.value);
+                socket.emit('chat message', msg.value);
+                msg.value = '';
+            }
+        });
+
+    </script>
+</body>
+</html>
